@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
 using UserManagement.Web.Models.Users;
 
@@ -11,20 +14,35 @@ public class UsersController : Controller
     public UsersController(IUserService userService) => _userService = userService;
 
     [HttpGet]
-    public ViewResult List()
+    public async Task<ViewResult> List(string filter)
     {
-        var items = _userService.GetAll().Select(p => new UserListItemViewModel
+        IEnumerable<User> users;
+        if (string.IsNullOrEmpty(filter))
         {
-            Id = p.Id,
-            Forename = p.Forename,
-            Surname = p.Surname,
-            Email = p.Email,
-            IsActive = p.IsActive
-        });
-
+            users = await _userService.GetAllAsync();
+        }
+        else if(filter.Equals("active", StringComparison.OrdinalIgnoreCase))
+        {
+            users = await _userService.FilterByActiveAsync(true);
+        }
+        else if (filter.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+        {
+            users = await _userService.FilterByActiveAsync(false);
+        }
+        else
+        {
+            users = await _userService.GetAllAsync();
+        }
         var model = new UserListViewModel
         {
-            Items = items.ToList()
+            Items = users.Select(p => new UserListItemViewModel
+            {
+                Id = p.Id,
+                Forename = p.Forename,
+                Surname = p.Surname,
+                Email = p.Email,
+                IsActive = p.IsActive
+            }).ToList()
         };
 
         return View(model);

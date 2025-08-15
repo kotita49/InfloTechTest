@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UserManagement.Data;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
@@ -16,10 +17,18 @@ public class UserService : IUserService
     /// </summary>
     /// <param name="isActive"></param>
     /// <returns></returns>
-    public IEnumerable<User> FilterByActive(bool isActive)
+    public async Task<IEnumerable<User>> FilterByActiveAsync(bool isActive)
     {
-        throw new NotImplementedException();
+        return await Task.Run(() =>
+        _dataAccess.GetAll<User>()
+            .Where(user => user.IsActive == isActive)
+            .ToList()
+            );
     }
 
-    public IEnumerable<User> GetAll() => _dataAccess.GetAll<User>();
+    public async Task<IEnumerable<User>> GetAllAsync()
+    {
+        return await Task.Run(() => _dataAccess.GetAll<User>()
+        .ToList());
+    }
 }
