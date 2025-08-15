@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
@@ -70,7 +71,8 @@ public class UserControllerTests
                 Forename = forename,
                 Surname = surname,
                 Email = email,
-                IsActive = isActive
+                IsActive = isActive,
+                DateOfBirth = new DateTime(1990, 1, 1)
             }
         };        
 

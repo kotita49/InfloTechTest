@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using UserManagement.Models;
@@ -56,7 +57,8 @@ public class UserServiceTests
                 Forename = forename,
                 Surname = surname,
                 Email = email,
-                IsActive = isActive
+                IsActive = isActive,
+                DateOfBirth = new DateTime(1990, 1, 1)
             }
         }.AsQueryable();
 

@@ -11,6 +11,7 @@
                 <th>Surname</th>
                 <th>Email</th>
                 <th>Account Active</th>
+				<th>Date of Birth</th>
                 <th style="width: 1px;"></th>
             </tr>
         </thead>
@@ -33,9 +34,10 @@
                     <td>
                         @(item.IsActive ? "Yes" : "No")
                     </td>
+					<td>@(item.DateOfBirth?.ToString("dd-MM-yyyy") ?? "-")</td>
                     <td>
                         <div class="dropdown">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="btnToggleActions">
+							<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="btnToggleActions_@item.Id">
                                 Actions
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="btnToggleActions">
