@@ -41,9 +41,23 @@
                                 Actions
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="btnToggleActions">
-                                <li><a class="dropdown-item" href="#">View</a></li>
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
+								<li>
+									<a class="dropdown-item" asp-controller="Users" asp-action="View" asp-route-id="@item.Id">
+										View
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item" asp-controller="Users" asp-action="Edit" asp-route-id="@item.Id">
+										Edit
+									</a>
+								</li>
+								<li>
+									<form asp-controller="Users" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+										<button type="submit" class="dropdown-item" onclick="return confirm('Are you sure you want to delete this user?');">
+											Delete
+										</button>
+									</form>
+								</li>
                             </ul>
                         </div>
                     </td>
@@ -60,8 +74,8 @@
 		<a asp-controller="Users" asp-action="List" asp-route-filter="inactive" class="btn btn-default">Non Active</a>
     </div>
 
-    <a href="#" class="btn btn-primary float-end">
-        Add User
-    </a>
+    <a asp-controller="Users" asp-action="Add" class="btn btn-primary float-end">
+		Add User
+	</a>
 </div>
 

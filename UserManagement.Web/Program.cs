@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using UserManagement.Data;
+using UserManagement.Services.Domain.Implementations;
+using UserManagement.Services.Domain.Interfaces;
 using Westwind.AspNetCore.Markdown;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +14,14 @@ builder.Services
     .AddDomainServices()
     .AddMarkdown()
     .AddControllersWithViews();
+
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseInMemoryDatabase("UserManagement"));
+builder.Services.AddScoped<IDataContext>(sp => sp.GetRequiredService<DataContext>());
+
+// Register UserService
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var app = builder.Build();
 

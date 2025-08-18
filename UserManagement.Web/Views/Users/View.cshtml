@@ -1,0 +1,27 @@
+﻿@model UserManagement.Web.Models.Users.UserListItemViewModel
+
+<h2>View User</h2>
+
+<div class="mb-3">
+	<label>Forename:</label>
+	<p>@Model.Forename</p>
+</div>
+<div class="mb-3">
+	<label>Surname:</label>
+	<p>@Model.Surname</p>
+</div>
+<div class="mb-3">
+	<label>Email:</label>
+	<p>@Model.Email</p>
+</div>
+<div class="mb-3">
+	<label>Account Active:</label>
+	<p>@(Model.IsActive ? "Yes" : "No")</p>
+</div>
+<div class="mb-3">
+	<label>Date of Birth:</label>
+	<p>@(Model.DateOfBirth?.ToString("yyyy-MM-dd") ?? "-")</p>
+</div>
+
+<a asp-action="List" class="btn btn-secondary">Back to List</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
