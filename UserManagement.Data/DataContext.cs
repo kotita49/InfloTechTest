@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UserManagement.Models;
@@ -64,5 +65,10 @@ public class DataContext : DbContext, IDataContext
     {
         base.Remove(entity);
         await SaveChangesAsync();
+    }
+
+    async Task<int> IDataContext.SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }
