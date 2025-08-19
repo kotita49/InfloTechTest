@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
+using UserManagement.Services.Interfaces;
 using UserManagement.Web.Models.Users;
 
 namespace UserManagement.WebMS.Controllers;
@@ -11,7 +12,13 @@ namespace UserManagement.WebMS.Controllers;
 public class UsersController : Controller
 {
     private readonly IUserService _userService;
-    public UsersController(IUserService userService) => _userService = userService;
+    private readonly ILogService _logService;
+    public UsersController(IUserService userService, ILogService logService)
+    {
+        _userService = userService;
+        _logService = logService;
+
+    }
 
     [HttpGet]
     public async Task<IActionResult> List(string filter)
@@ -54,6 +61,8 @@ public class UsersController : Controller
             DateOfBirth = model.DateOfBirth
         };
         await _userService.AddAsync(user);
+        await _logService.AddLogAsync("Created", $"User {user.Forename} {user.Surname} was created.", user.Id);
+
         return RedirectToAction(nameof(List));
     }
 
@@ -66,6 +75,8 @@ public class UsersController : Controller
             return NotFound();
         }
         var model = MapToViewModel(user);
+        var logs = await _logService.GetLogsForUserAsync(id);
+        ViewBag.Logs = logs;
         return View(model);
     }
 
@@ -104,6 +115,8 @@ public class UsersController : Controller
         user.DateOfBirth = model.DateOfBirth;
 
         await _userService.UpdateAsync(user);
+        await _logService.AddLogAsync("Updated", $"User {user.Forename} {user.Surname} was updated.", user.Id);
+
         return RedirectToAction(nameof(List));
     }
 
@@ -114,6 +127,8 @@ public class UsersController : Controller
         var user = await _userService.GetByIdAsync(id);
         if (user == null) return NotFound();
         await _userService.DeleteAsync(id);
+        await _logService.AddLogAsync("Deleted", $"User {user.Forename} {user.Surname} was deleted.", id);
+
         return RedirectToAction(nameof(List));
 
     }

@@ -1,0 +1,11 @@
+﻿@model UserManagement.Models.LogEntry
+
+<h2>Log Details</h2>
+
+<div>
+	<p><strong>Timestamp:</strong> @Model.Timestamp.ToLocalTime()</p>
+	<p><strong>Action:</strong> @Model.Action</p>
+	<p><strong>Details:</strong> @Model.Details</p>
+	<p><strong>User Id:</strong> @Model.UserId</p>
+</div>
+

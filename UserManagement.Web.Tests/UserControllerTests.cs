@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Models;
 using UserManagement.Services.Domain.Interfaces;
+using UserManagement.Services.Interfaces;
 using UserManagement.Web.Models.Users;
 using UserManagement.WebMS.Controllers;
 
@@ -45,7 +46,7 @@ public class UserControllerTests
 
     
     [Fact]
-    public async Task Add_Post_ValidModel_ShouldCallServiceAndRedirect()
+    public async Task Add_Post_ValidModel_ShouldLogAndRedirect()
     {
         // Arrange
         var controller = CreateController();
@@ -55,11 +56,12 @@ public class UserControllerTests
         var result = await controller.Add(model);
 
         // Assert
-        _userService.Verify(s => s.AddAsync(It.Is<User>(u =>
-            u.Forename == model.Forename &&
-            u.Surname == model.Surname &&
-            u.Email == model.Email
-        )), Times.Once);
+        _userService.Verify(s => s.AddAsync(It.IsAny<User>()), Times.Once);
+        _logService.Verify(s => s.AddLogAsync(
+            "Created",
+            It.Is<string>(msg => msg.Contains(model.Forename) && msg.Contains(model.Surname)),
+            It.IsAny<long>()
+        ), Times.Once);
 
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         redirectResult.ActionName.Should().Be(nameof(controller.List));
@@ -109,7 +111,7 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task Edit_Post_ValidModel_ShouldUpdateUserAndRedirect()
+    public async Task Edit_Post_ValidModel_ShouldUpdateUserAndLog()
     {
         // Arrange
         var controller = CreateController();
@@ -119,12 +121,13 @@ public class UserControllerTests
         // Act
         var result = await controller.Edit(user.Id, model);
         // Assert
-        _userService.Verify(s => s.UpdateAsync(It.Is<User>(u =>
-            u.Id == user.Id &&
-            u.Forename == model.Forename &&
-            u.Surname == model.Surname &&
-            u.Email == model.Email
-        )), Times.Once);
+        _userService.Verify(s => s.UpdateAsync(It.Is<User>(u => u.Id == user.Id)), Times.Once);
+        _logService.Verify(s => s.AddLogAsync(
+            "Updated",
+            It.Is<string>(msg => msg.Contains(model.Forename) && msg.Contains(model.Surname)),
+            user.Id
+        ), Times.Once);
+
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         redirectResult.ActionName.Should().Be(nameof(controller.List));
     }
@@ -147,16 +150,23 @@ public class UserControllerTests
     }
 
     [Fact]
-    public async Task Delete_ExistingUser_ShouldCallServiceAndRedirect()
+    public async Task Delete_ExistingUser_ShouldDeleteAndLog()
     {
         // Arrange
         var controller = CreateController();
         var user = SetupUsers()[0];
+        user.Id = 199;
         _userService.Setup(s => s.GetByIdAsync(user.Id)).ReturnsAsync(user);
         // Act
         var result = await controller.Delete(user.Id);
         // Assert
         _userService.Verify(s => s.DeleteAsync(user.Id), Times.Once);
+        _logService.Verify(s => s.AddLogAsync(
+            "Deleted",
+            It.Is<string>(msg => msg.Contains(user.Forename) && msg.Contains(user.Surname)),
+            user.Id
+        ), Times.Once);
+
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         redirectResult.ActionName.Should().Be(nameof(controller.List));
     }
@@ -227,5 +237,6 @@ public class UserControllerTests
     };
 
     private readonly Mock<IUserService> _userService = new();
-    private UsersController CreateController() => new(_userService.Object);
+    private readonly Mock<ILogService> _logService = new();
+    private UsersController CreateController() => new(_userService.Object, _logService.Object);
 }

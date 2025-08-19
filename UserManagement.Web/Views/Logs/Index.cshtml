@@ -1,0 +1,52 @@
+﻿@model UserManagement.Models.PagedResults<UserManagement.Models.LogEntry>
+
+<h2>Application Logs</h2>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Timestamp</th>
+			<th>Action</th>
+			<th>Details</th>
+			<th>UserId</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var log in Model.Items)
+		{
+			<tr>
+				<td>@log.Timestamp.ToLocalTime()</td>
+				<td>@log.Action</td>
+				<td>@log.Details</td>
+				<td>@log.UserId</td>
+				<td><a asp-action="Details" asp-route-id="@log.Id">View</a></td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<div class="d-flex justify-content-between mt-3">
+	<div>
+		Page @Model.Page of @Model.TotalPages
+		(Total items: @Model.TotalItems)
+	</div>
+
+	<div>
+		@if (Model.Page > 1)
+		{
+			<a class="btn btn-secondary me-2"
+			   asp-action="Index"
+			   asp-route-page="@(Model.Page - 1)"
+			   asp-route-pageSize="@Model.PageSize">Previous</a>
+		}
+
+		@if (Model.Page < Model.TotalPages)
+		{
+			<a class="btn btn-secondary"
+			   asp-action="Index"
+			   asp-route-page="@(Model.Page + 1)"
+			   asp-route-pageSize="@Model.PageSize">Next</a>
+		}
+	</div>
+</div>

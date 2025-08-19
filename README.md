@@ -1,3 +1,32 @@
+# Testing
+
+This project uses xUnit for unit testing.
+
+NuGet package installed:
+
+xunit
+
+xunit.runner.visualstudio (for running tests in Visual Studio)
+
+Moq (for mocking dependencies)
+
+Integration Tests (Future Work)
+
+For this exercise, I focused on unit testing the service layer and controllers, since that’s where most of the business logic lives.
+In a real-world project, I would also add integration tests using WebApplicationFactory<T> and EF Core InMemory to cover the full flow:
+
+Hitting controller endpoints.
+
+Verifying persistence with a real (in-memory) database.
+
+Ensuring that pagination and log retrieval work end-to-end.
+
+This would give confidence that all the layers work together, not just in isolation.
+
+
+
+
+
 # User Management Technical Exercise
 
 The exercise is an ASP.NET Core web application backed by Entity Framework Core, which faciliates management of some fictional users.

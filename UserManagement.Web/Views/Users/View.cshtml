@@ -1,4 +1,7 @@
 ﻿@model UserManagement.Web.Models.Users.UserListItemViewModel
+@{
+	var logs = ViewBag.Logs as IEnumerable<UserManagement.Models.LogEntry>;
+}
 
 <h2>View User</h2>
 
@@ -21,6 +24,35 @@
 <div class="mb-3">
 	<label>Date of Birth:</label>
 	<p>@(Model.DateOfBirth?.ToString("yyyy-MM-dd") ?? "-")</p>
+</div>
+<div class="mb-3">
+	<h3>Activity Logs</h3>
+	@if (logs != null && logs.Any())
+	{
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Timestamp</th>
+					<th>Action</th>
+					<th>Details</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var log in logs)
+				{
+					<tr>
+						<td>@log.Timestamp.ToLocalTime()</td>
+						<td>@log.Action</td>
+						<td>@log.Details</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	}
+	else
+	{
+		<p>No logs for this user yet.</p>
+	}
 </div>
 
 <a asp-action="List" class="btn btn-secondary">Back to List</a>
