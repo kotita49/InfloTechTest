@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserManagement.Data;
 using UserManagement.Services.Domain.Implementations;
@@ -18,8 +19,8 @@ builder.Services
     .AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseInMemoryDatabase("UserManagement"));
-builder.Services.AddScoped<IDataContext>(sp => sp.GetRequiredService<DataContext>());
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Register UserService
 builder.Services.AddScoped<IUserService, UserService>();

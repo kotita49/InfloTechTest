@@ -1,3 +1,36 @@
+## Database Setup
+
+This project now uses **SQL Server** with Entity Framework Core.
+
+
+### Prerequisites
+1. .NET 9 SDK
+
+Local SQL Server instance (On Windows: LocalDB (`(localdb)\MSSQLLocalDB`) comes with Visual Studio)
+
+2. EF Core CLI tools:
+
+dotnet tool install --global dotnet-ef
+
+3. The following NuGet packages are required (already added to UserManagement.Data):
+
+dotnet add UserManagement.Data package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add UserManagement.Data package Microsoft.EntityFrameworkCore.Design
+
+4. Update the connection string in `appsettings.json` if needed:
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=UserManagement;Trusted_Connection=True;"
+   }
+
+
+5.Apply migrations:
+   ```bash
+   dotnet ef database update
+   ```
+
+6. Run the application
+
 # Testing
 
 This project uses xUnit for unit testing.
@@ -9,11 +42,12 @@ xunit
 xunit.runner.visualstudio (for running tests in Visual Studio)
 
 Moq (for mocking dependencies)
+Unit tests do not require SQL Server; they use EF Core’s in-memory provider.
 
 Integration Tests (Future Work)
 
 For this exercise, I focused on unit testing the service layer and controllers, since that’s where most of the business logic lives.
-In a real-world project, I would also add integration tests using WebApplicationFactory<T> and EF Core InMemory to cover the full flow:
+In a real-world project, I would also add integration tests to cover the full flow:
 
 Hitting controller endpoints.
 

@@ -12,7 +12,7 @@ public class DataContext : DbContext, IDataContext
 {
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
